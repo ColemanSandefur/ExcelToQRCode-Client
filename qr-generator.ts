@@ -1,8 +1,10 @@
 import XLSX = require("xlsx");
 import QRCode = require("qrcode");
+import fs = require("fs");
 
-QRCode.toFile("qr-code.jpg", `http://73.166.82.182:3000/data={"name": "steve"}`);
-let ip = "http://192.168.1.19:3000";
+let file = fs.readFileSync("qrconfig.json");
+let ip = `http://${JSON.parse(file.toString()).ip}`;
+
 
 export class QrGenerator {
     static generateQRCode(path: string, data: JSON) {
