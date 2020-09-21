@@ -1,4 +1,8 @@
+#paths
 node_modules
+.vscode
+
+#files
+qrconfig.json
 *.js
 *.jpg
-.vscode

@@ -16,10 +16,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "static")));
 
 //Import my classes
+import { ConfigManager } from "./ConfigManager";
+ConfigManager.loadConfig("qrconfig.json");
 import { QrGenerator } from "./qr-generator";
 
-server.listen(3000, () => {
-    console.log("Listening on port *3000");
+server.listen(ConfigManager.config.ip.split(":").pop(), () => {
+    console.log(`Listening on port *${ConfigManager.config.ip.split(":").pop()}`);
 });
 
 app.get("/", (req, res) => {

@@ -2,9 +2,9 @@ import XLSX = require("xlsx");
 import QRCode = require("qrcode");
 import fs = require("fs");
 
-let file = fs.readFileSync("qrconfig.json");
-let ip = `http://${JSON.parse(file.toString()).ip}`;
+import { ConfigManager } from "./ConfigManager"
 
+let ip = `http://${ConfigManager.config.ip}`;
 
 export class QrGenerator {
     static generateQRCode(path: string, data: JSON) {
