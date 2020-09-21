@@ -1,7 +1,13 @@
 import fs = require("fs");
 
 export class ConfigManager {
-    static config: {"ip": string};
+    static config: {
+        "ip": string,
+        "excelRange": {
+            "start": string,
+            "stop": string
+        }
+    };
 
     static loadConfig(path: string) {
         if (fs.existsSync(path)) {
@@ -13,7 +19,11 @@ export class ConfigManager {
 
     private static createConfigFile(path: string) {
         let newConfig:JSON = <JSON><unknown>{
-            "ip": "0.0.0.0:3000"
+            "ip": "0.0.0.0:3000",
+            "excelRange": {
+                "start": "A2",
+                "stop": "D10"
+            }
         };
 
         this.config = <any>newConfig;

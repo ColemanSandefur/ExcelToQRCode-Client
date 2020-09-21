@@ -1,16 +1,13 @@
-import XLSX = require("xlsx");
 import QRCode = require("qrcode");
-import fs = require("fs");
 
 import { ConfigManager } from "./ConfigManager"
+
 
 let ip = `http://${ConfigManager.config.ip}`;
 
 export class QrGenerator {
     static generateQRCode(path: string, data: JSON) {
         let encoded: string = this.base64Encode(JSON.stringify(data));
-        console.log(`${ip}/decode/${encoded}`);
-        console.log(this.base64Decode(encoded));
         QRCode.toFile(path, `${ip}/decode/${encoded}`);
     }
 

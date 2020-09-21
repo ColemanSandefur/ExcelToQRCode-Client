@@ -8,3 +8,4 @@ qrconfig.json
 *.jpg
 public/css/*.css
 public/css/*.css.map
+*.xlsx
