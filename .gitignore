@@ -6,3 +6,5 @@ node_modules
 qrconfig.json
 *.js
 *.jpg
+public/css/*.css
+public/css/*.css.map

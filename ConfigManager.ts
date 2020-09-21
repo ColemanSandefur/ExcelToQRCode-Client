@@ -13,7 +13,7 @@ export class ConfigManager {
 
     private static createConfigFile(path: string) {
         let newConfig:JSON = <JSON><unknown>{
-            "ip": "0.0.0.0"
+            "ip": "0.0.0.0:3000"
         };
 
         this.config = <any>newConfig;

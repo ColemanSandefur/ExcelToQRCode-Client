@@ -6,17 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <% if (typeof(data) != "undefined") { %>
-        <p style="display:none" id="rawData"><%= data %></p>
-    <% } %> 
     <h1>Hello, World</h1>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <% if (typeof(data) != "undefined") { %>
-        <script>
-            let data = JSON.parse($("#rawData").text());
-            $("#rawData").remove();
-            $("body").append(`<p>name: ${data.name}</p>`);
-        </script>
-    <% } %> 
 </body>
 </html>
