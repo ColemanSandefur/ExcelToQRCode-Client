@@ -1,13 +1,14 @@
 import fs = require("fs");
 
+export class Config {
+    "ip": string;
+    "excelRange": {
+        "start": string,
+        "stop": string
+    }
+}
 export class ConfigManager {
-    static config: {
-        "ip": string,
-        "excelRange": {
-            "start": string,
-            "stop": string
-        }
-    };
+    static config: Config
 
     static loadConfig(path: string) {
         if (fs.existsSync(path)) {
@@ -18,15 +19,11 @@ export class ConfigManager {
     }
 
     private static createConfigFile(path: string) {
-        let newConfig:JSON = <JSON><unknown>{
-            "ip": "0.0.0.0:3000",
-            "excelRange": {
-                "start": "A2",
-                "stop": "D10"
-            }
-        };
+        let newConfig:Config = new Config();
+        newConfig.ip = "0.0.0.0:3000";
+        newConfig.excelRange = {"start": "A2", "stop": "D10"};
 
         this.config = <any>newConfig;
-        fs.writeFileSync(path, JSON.stringify(newConfig));
+        fs.writeFileSync(path, JSON.stringify(newConfig, null, "\t"));
     }
 }

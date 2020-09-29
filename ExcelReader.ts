@@ -29,7 +29,7 @@ export class ExcelReader {
             let line = JSON.parse("{}");
             let i = 0; //Keeps track of what column we are on when using columnNames
             for (let c = Math.min(startAddress.c, stopAddress.c); c <= Math.max(startAddress.c, stopAddress.c); c++) {
-                console.log(`c: ${c}, r: ${r}`);
+                // console.log(`c: ${c}, r: ${r}`);
                 var cellRef = XLSX.utils.encode_cell({c: c, r: r});
                 var data = this.worksheet[cellRef].w;
 
@@ -44,7 +44,7 @@ export class ExcelReader {
             
         }
 
-        console.log(output);
+        // console.log(output);
 
         return output;
     }
