@@ -4,11 +4,29 @@ import fs = require("fs");
 import { ConfigManager } from "./ConfigManager";
 ConfigManager.loadConfig("qrconfig.json");
 import { QrGenerator } from "./qr-generator";
-import {ExcelReader} from "./ExcelReader";
+import {ExcelData, ExcelReader} from "./ExcelReader";
 
 let reader = new ExcelReader();
-reader.loadBook("test-book.xlsx");
-reader.loadPage("Sheet1");
+reader.loadBook(ConfigManager.config.excelFileName);
+reader.loadPage(ConfigManager.config.excelSheetName);
 
-QrGenerator.generateQRCode("qr-code.jpg",reader.getRange(["Name", "Job", "Site"], "A2", "I3")[0]);
-QrGenerator.generateQRCode("qr-code2.jpg", JSON.parse('{"hi": "steve"}'));
+let jsonData = reader.getRange(ConfigManager.config.columnNames, ConfigManager.config.excelRange.start, ConfigManager.config.excelRange.stop);
+
+async function generateQRCodes(data: ExcelData[]) {
+    for (let i = 0; i < data.length; i++) {
+        let row = data[i];
+        await QrGenerator.generateQRCode(ConfigManager.config.qrFileName, row).then((UUID) => {
+            jsonData[i].UUID = UUID;
+        });
+    }
+}
+
+generateQRCodes(jsonData).then(() => {
+    let outputOrder = ConfigManager.config.outputOrder;
+    jsonData = JSON.parse(JSON.stringify(jsonData, outputOrder));
+    if (ConfigManager.config.fileReferenceName.indexOf(".xlsx")) {
+        ExcelReader.writeBook(ConfigManager.config.fileReferenceName, jsonData);
+    } else {
+        fs.writeFileSync(ConfigManager.config.fileReferenceName, JSON.stringify(jsonData, null, "\t"));
+    }
+});

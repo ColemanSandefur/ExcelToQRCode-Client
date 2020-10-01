@@ -3,37 +3,38 @@ import axios = require("axios");
 
 import { ConfigManager } from "./ConfigManager"
 import Axios from "axios";
+import { ExcelData } from "./ExcelReader";
 
 
 let ip = `http://${ConfigManager.config.ip}`;
 
+class FormatKeys {
+    [key: string]: string;
+}
 export class QrGenerator {
-    static generateQRCode(path: string, data: JSON) {
+    static generateQRCode(path: string, data: ExcelData): Promise<string> {
         // let encoded: string = this.base64Encode(JSON.stringify(data));
-        let dataSend = {
-            valveFlow: 0,
-            fluid: 0,
-            valveID: Math.floor(Math.random() * 1000)
-        };
-        Axios({
-            method:'post',
-            url: `${ip}/encode`,
-            data: {
-                valveFlow: 0,
-                fluid: 0,
-                valveID: Math.floor(Math.random() * 1000)
-            }
-        }).then((results) => {
-            // console.log(results.data);
-            let UUID = results.data;
-            
-            // console.log(UUID);
-            console.log(`${ip}/decode/${UUID}`);
-            let options: QRCode.QRCodeToFileOptions = {
-            };
-            QRCode.toFile(path, `${ip}/decode/${UUID}`, options);
+        return new Promise((res, rej) => {
+            Axios({
+                method:'post',
+                url: `${ip}/encode`,
+                data: JSON.parse(JSON.stringify(data))
+            }).then((results) => {
+                let UUID = results.data;
+                console.log(`${ip}/decode/${UUID}`);
+
+                let options: QRCode.QRCodeToFileOptions = {
+                };
+
+                let formatKeys = {
+                    "$UUID": UUID,
+                }
+                path = this.formatName(path, formatKeys);
+
+                QRCode.toFile(path, `${ip}/decode/${UUID}`, options);
+                res(UUID);
+            });
         });
-        
     }
 
     static base64Decode(base64: string): string {
@@ -42,6 +43,14 @@ export class QrGenerator {
 
     static base64Encode(ascii: string): string {
         return Buffer.from(ascii).toString('base64').replace("=", "");
+    }
+
+    private static formatName(name: string, formatKeys: FormatKeys): string {
+        Object.keys(formatKeys).forEach(e => {
+            name = name.replace(e, formatKeys[e]);
+        });
+
+        return name;
     }
 }
     

@@ -1,6 +1,9 @@
 import { debug } from "console";
 import XLSX = require("xlsx");
 
+export class ExcelData {
+    [key: string]: string;
+}
 export class ExcelReader {
     public workbook?: XLSX.WorkBook;
     public worksheet?: XLSX.WorkSheet;
@@ -13,9 +16,10 @@ export class ExcelReader {
         this.worksheet = this.workbook?.Sheets[name];
     }
 
-    getRange(columnNames: string[], start: string, stop: string): JSON[] {
+    getRange(columnNames: string[], start: string, stop: string): ExcelData[] {
+        let excelData = [];
         if (this.worksheet == null) {
-            return JSON.parse("{}");
+            return [];
         }
 
         //Gets encoded format cells ('A1', 'C8', ect.) to an easier format of (c,r) column, row
@@ -23,10 +27,10 @@ export class ExcelReader {
         let stopAddress:XLSX.CellAddress = XLSX.utils.decode_cell(stop);
 
         //This is where all the json objects end up
-        let output: JSON[] = [];
+        let output: ExcelData[] = [];
 
         for (let r = Math.min(startAddress.r, stopAddress.r); r <= Math.max(startAddress.r, stopAddress.r); r++) {
-            let line = JSON.parse("{}");
+            let line = new ExcelData;
             let i = 0; //Keeps track of what column we are on when using columnNames
             for (let c = Math.min(startAddress.c, stopAddress.c); c <= Math.max(startAddress.c, stopAddress.c); c++) {
                 // console.log(`c: ${c}, r: ${r}`);
@@ -47,5 +51,15 @@ export class ExcelReader {
         // console.log(output);
 
         return output;
+    }
+
+    static writeBook(name: string, data:ExcelData[]) {
+        var wb = XLSX.utils.book_new();
+
+        let ws = XLSX.utils.json_to_sheet(JSON.parse(JSON.stringify(data)));
+
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        XLSX.writeFile(wb, name);
     }
 }
