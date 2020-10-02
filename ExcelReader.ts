@@ -42,6 +42,11 @@ export class ExcelReader {
             for (let c = Math.min(startAddress.c, stopAddress.c); c <= Math.max(startAddress.c, stopAddress.c); c++) {
                 // console.log(`c: ${c}, r: ${r}`);
                 var cellRef = XLSX.utils.encode_cell({c: c, r: r});
+
+                if (this.worksheet[cellRef] == undefined) {
+                    console.log(`Cell at ${cellRef} not found`);
+                    continue;
+                }
                 var data = this.worksheet[cellRef].w;
 
                 if (columnNames.length > i) {
