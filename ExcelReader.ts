@@ -1,5 +1,5 @@
-import { debug } from "console";
 import XLSX = require("xlsx");
+import fs = require("fs");
 
 export class ExcelData {
     [key: string]: string;
@@ -9,11 +9,18 @@ export class ExcelReader {
     public worksheet?: XLSX.WorkSheet;
 
     loadBook(path: string) {
-        this.workbook = XLSX.readFile(path);
+        if (fs.existsSync(path) == true) {
+            this.workbook = XLSX.readFile(path);
+        } else {
+            throw Error(`Book at "${path}" not found`);
+        }
     }
 
     loadPage(name: string) {
         this.worksheet = this.workbook?.Sheets[name];
+        if (this.worksheet == undefined) {
+            throw Error(`Sheet: "${name}" not found in file`);
+        }
     }
 
     getRange(columnNames: string[], start: string, stop: string): ExcelData[] {

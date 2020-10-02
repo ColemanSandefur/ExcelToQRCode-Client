@@ -16,7 +16,11 @@ async function generateQRCodes(data: ExcelData[]) {
     for (let i = 0; i < data.length; i++) {
         let row = data[i];
         await QrGenerator.generateQRCode(ConfigManager.config.qrFileName, row).then((UUID) => {
-            jsonData[i].UUID = UUID;
+            if (UUID == null) {
+                jsonData[i].UUID = "File Not Created"
+            } else {
+                jsonData[i].UUID = UUID;
+            }
         });
     }
 }

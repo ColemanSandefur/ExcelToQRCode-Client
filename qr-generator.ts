@@ -12,7 +12,7 @@ class FormatKeys {
     [key: string]: string;
 }
 export class QrGenerator {
-    static generateQRCode(path: string, data: ExcelData): Promise<string> {
+    static generateQRCode(path: string, data: ExcelData): Promise<string | null> {
         // let encoded: string = this.base64Encode(JSON.stringify(data));
         return new Promise((res, rej) => {
             Axios({
@@ -21,6 +21,11 @@ export class QrGenerator {
                 data: JSON.parse(JSON.stringify(data))
             }).then((results) => {
                 let UUID = results.data;
+
+                if (UUID == '') {
+                    res(null)
+                }
+
                 console.log(`${ip}/decode/${UUID}`);
 
                 let options: QRCode.QRCodeToFileOptions = {
